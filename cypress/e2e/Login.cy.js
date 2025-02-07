@@ -1,3 +1,7 @@
+
+//criou uma constante onde tem user valido/não valido em fixture e chamou
+import userData from '../fixtures/userData.json'
+
 describe('Orange Teste', () => {
   
   const selectorsList = {
@@ -8,28 +12,30 @@ describe('Orange Teste', () => {
 
   }
 
-  it('Login teste', () => {
+
+
+  it('Login teste valido', () => {
     cy.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login')
-    cy.get(selectorsList.usernameField).type('Admin')
-    cy.get(selectorsList.passwordField).type('admin123')
+    cy.get(selectorsList.usernameField).type(userData.userSuccess.username)
+    cy.get(selectorsList.passwordField).type(userData.userSuccess.password)
     cy.get(selectorsList.loginButtom).click()
     cy.location('pathname').should('equal', '/web/index.php/dashboard/index')
     cy.get(selectorsList.selectiontitletopbar).contains('Dashboard')
   })
 
-  it('User errado', () => {
+  it('Login User errado', () => {
     cy.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login')
-    cy.get(selectorsList.usernameField).type('ADEMI')
-    cy.get(selectorsList.passwordField).type('admin123')
+    cy.get(selectorsList.usernameField).type(userData.userfail.username)
+    cy.get(selectorsList.passwordField).type(userData.userSuccess.password)
     cy.get(selectorsList.loginButtom).click()
     cy.location('pathname').should('equal', '/web/index.php/auth/login')
     cy.get('.oxd-alert')
   })
 
-  it('Senha errado', () => {
+  it('Login Senha errado', () => {
     cy.visit('https://opensource-demo.orangehrmlive.com/web/index.php/auth/login')
-    cy.get(selectorsList.usernameField).type('Admin')
-    cy.get(selectorsList.passwordField).type('ADEMI')
+    cy.get(selectorsList.usernameField).type(userData.userSuccess.username)
+    cy.get(selectorsList.passwordField).type(userData.userfail.password)
     cy.get(selectorsList.loginButtom).click()
     cy.location('pathname').should('equal', '/web/index.php/auth/login')
     cy.get('.oxd-alert')
