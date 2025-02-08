@@ -1,6 +1,10 @@
 import userData from '../fixtures/userData.json';
 import selectors from '../support/selectors';
 
+//instancia dados randomicos
+const Chance = require('chance');
+const chance = new Chance();
+
 describe('Testes de Login e Atualização de Perfil no OrangeHRM', () => {
   it('Login com credenciais válidas e atualização de perfil', () => {
     cy.visit('/auth/login');
@@ -16,15 +20,15 @@ describe('Testes de Login e Atualização de Perfil no OrangeHRM', () => {
     cy.get(selectors.profileButton).click();
 
     // Atualizar informações pessoais
-    cy.get(selectors.firstNameInput).clear().type("Julião");
-    cy.get(selectors.middleNameInput).clear().type("Balton");
-    cy.get(selectors.lastNameInput).clear().type("Nrothem");
+    cy.get(selectors.firstNameInput).clear().type(chance.first())
+    cy.get(selectors.middleNameInput).clear().type(chance.name());
+    cy.get(selectors.lastNameInput).clear().type(chance.last());
     
     // Atualizar apelidos e datas
-    cy.get(selectors.nicknameInputs).eq(4).clear().type("EmPLYtest");
-    cy.get(selectors.nicknameInputs).eq(5).clear().type("66592");
-    cy.get(selectors.nicknameInputs).eq(6).clear().type("230910");
-    cy.get(selectors.nicknameInputs).eq(7).clear().type('2025-02-08');
+    cy.get(selectors.nicknameInputs).eq(4).clear().type(chance.string({ length: 5}));
+    cy.get(selectors.nicknameInputs).eq(5).clear().type(chance.prime({ min: 1, max: 10 }));
+    cy.get(selectors.nicknameInputs).eq(6).clear().type(chance.prime({ min: 1, max: 5 }));
+    cy.get(selectors.nicknameInputs).eq(7).clear().type("2030-03-02");
     cy.get('.--close').click()
 
     // Selecionar opções nos dropdowns
@@ -36,7 +40,7 @@ describe('Testes de Login e Atualização de Perfil no OrangeHRM', () => {
     cy.get(selectors.dropdownArrow).eq(2).click();
     cy.get('.oxd-select-dropdown > :nth-child(4)').click();
 
-    cy.get(selectors.testField).clear().type('12902')
+    cy.get(selectors.testField).clear().type(chance.prime())
 
     // Inserir data de nascimento e selecionar gênero
     cy.get(selectors.birthDateInput).eq(1).clear().type('1980-10-18');
