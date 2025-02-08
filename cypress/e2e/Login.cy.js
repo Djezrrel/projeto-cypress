@@ -1,91 +1,51 @@
+import userData from '../fixtures/userData.json';
+import selectors from '../support/selectors';
 
-//criou uma constante onde tem user valido/não valido em fixture e chamou
-import userData from '../fixtures/userData.json'
-
-
-describe('Orange Teste', () => {
-  
-  const selectorsList = {
-    usernameField: "[name='username']",
-    passwordField: "[name='password']",
-    loginButtom: ".oxd-button",
-    selectiontitletopbar: ".oxd-text--h6",
-    infoButtom: "[href='/web/index.php/pim/viewMyDetails']",
-    firstName: ".orangehrm-firstname",
-    MiddleName: ".orangehrm-middlename",
-    LastName: ".orangehrm-lastname",
-    GenericnickName: ".oxd-input", //lista com vários elementos,sem id especifico 
-    Date_campo:".oxd-input--active[placeholder='yyyy-dd-mm']",
-    Close_date: ".--close",
-    Salvando: ".oxd-button--secondary",
-    GeneriComboBox: ".oxd-select-text--arrow",
-    MorF: ".oxd-radio-wrapper",
-    test_field: "[options='']",
-   
-
-  }
-
-
-
-  it.only('Login teste valido', () => {
-    cy.visit('/auth/login')
-    cy.get(selectorsList.usernameField).type(userData.userSuccess.username)
-    cy.get(selectorsList.passwordField).type(userData.userSuccess.password)
-    cy.get(selectorsList.loginButtom).click()
-    cy.location('pathname').should('equal', '/web/index.php/dashboard/index')
-    cy.get(selectorsList.selectiontitletopbar).contains('Dashboard')
-    cy.get(selectorsList.infoButtom).click()
-
-    cy.get(selectorsList.firstName).clear().type("Julião")
-    cy.get(selectorsList.MiddleName).clear().type("Balton")
-    cy.get(selectorsList.LastName).clear().type("Nrothem")
-  
-    cy.get(selectorsList.GenericnickName).eq(4).clear().type("EmPLYtest") //e o elemento 4º da lista
-    cy.get(selectorsList.GenericnickName).eq(5).clear().type("66592")
-    cy.get(selectorsList.GenericnickName).eq(6).clear().type("230910")
-    cy.get(selectorsList.GenericnickName).eq(7).clear().type('2025-02-08')
-    cy.get(selectorsList.Close_date).click()
-
-    cy.get(selectorsList.GeneriComboBox).eq(0).click()
-    cy.get(':nth-child(27)').click()
-    cy.get(selectorsList.GeneriComboBox).eq(1).click()
-    cy.get('.oxd-select-dropdown > :nth-child(2)').click()
-    cy.get(selectorsList.Date_campo).eq(1).clear().type('1980-10-18')
-    cy.get(selectorsList.MorF).eq(0).click()
-
-    cy.get(selectorsList.Salvando).eq(0).click()
-    cy.get('body').should('contain','Successfully Updated')
-    cy.get('.oxd-toast')
-
-    cy.get(selectorsList.GeneriComboBox).eq(2).click()
-    cy.get('.oxd-select-dropdown > :nth-child(5)').click()
-
-    cy.get(selectorsList.test_field).clear().type(445)
-
-    cy.get(selectorsList.Salvando).eq(1).click()
-    cy.get('body').should('contain','Successfully Updated')
-    cy.get('.oxd-toast')
-
+describe('Testes de Login e Atualização de Perfil no OrangeHRM', () => {
+  it('Login com credenciais válidas e atualização de perfil', () => {
+    cy.visit('/auth/login');
     
-  })
+    // Login
+    cy.get(selectors.usernameInput).type(userData.userSuccess.username);
+    cy.get(selectors.passwordInput).type(userData.userSuccess.password);
+    cy.get(selectors.loginButton).click();
+    cy.location('pathname').should('equal', '/web/index.php/dashboard/index');
+    cy.get(selectors.dashboardTitle).contains('Dashboard');
+    
+    // Acessar perfil
+    cy.get(selectors.profileButton).click();
 
-  it('Login User errado', () => {
-    cy.visit('/auth/login')
-    cy.get(selectorsList.usernameField).type(userData.userfail.username)
-    cy.get(selectorsList.passwordField).type(userData.userSuccess.password)
-    cy.get(selectorsList.loginButtom).click()
-    cy.location('pathname').should('equal', '/web/index.php/auth/login')
-    cy.get('.oxd-alert')
-  })
+    // Atualizar informações pessoais
+    cy.get(selectors.firstNameInput).clear().type("Julião");
+    cy.get(selectors.middleNameInput).clear().type("Balton");
+    cy.get(selectors.lastNameInput).clear().type("Nrothem");
+    
+    // Atualizar apelidos e datas
+    cy.get(selectors.nicknameInputs).eq(4).clear().type("EmPLYtest");
+    cy.get(selectors.nicknameInputs).eq(5).clear().type("66592");
+    cy.get(selectors.nicknameInputs).eq(6).clear().type("230910");
+    cy.get(selectors.nicknameInputs).eq(7).clear().type('2025-02-08');
+    cy.get('.--close').click()
 
-  it('Login Senha errado', () => {
-    cy.visit('/auth/login')
-    cy.get(selectorsList.usernameField).type(userData.userSuccess.username)
-    cy.get(selectorsList.passwordField).type(userData.userfail.password)
-    cy.get(selectorsList.loginButtom).click()
-    cy.location('pathname').should('equal', '/web/index.php/auth/login')
-    cy.get('.oxd-alert')
-  })
+    // Selecionar opções nos dropdowns
+    cy.get(selectors.dropdownArrow).eq(0).click();
+    cy.get(':nth-child(27)').click();
+    cy.get(selectors.dropdownArrow).eq(1).click();
+    cy.get('.oxd-select-dropdown > :nth-child(2)').click();
 
+    cy.get(selectors.dropdownArrow).eq(2).click();
+    cy.get('.oxd-select-dropdown > :nth-child(4)').click();
 
-})
+    cy.get(selectors.testField).clear().type('12902')
+
+    // Inserir data de nascimento e selecionar gênero
+    cy.get(selectors.birthDateInput).eq(1).clear().type('1980-10-18');
+    cy.get(selectors.genderRadio).eq(0).click();
+    
+    // Salvar alterações e verificar sucesso
+    cy.get(selectors.saveButton).eq(0).click();
+    cy.get(selectors.saveButton).eq(1).click();
+    cy.get('body').should('contain', 'Successfully Updated');
+    cy.get('.oxd-toast');
+  });
+});
