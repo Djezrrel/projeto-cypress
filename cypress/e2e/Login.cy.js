@@ -15,10 +15,13 @@ describe('Orange Teste', () => {
     MiddleName: ".orangehrm-middlename",
     LastName: ".orangehrm-lastname",
     GenericnickName: ".oxd-input", //lista com vários elementos,sem id especifico 
-    Date_campo:"[placeholder='yyyy-mm-dd']",
+    Date_campo:".oxd-input--active[placeholder='yyyy-dd-mm']",
     Close_date: ".--close",
     Salvando: ".oxd-button--secondary",
-
+    GeneriComboBox: ".oxd-select-text--arrow",
+    MorF: ".oxd-radio-wrapper",
+    test_field: "[options='']",
+   
 
   }
 
@@ -42,9 +45,27 @@ describe('Orange Teste', () => {
     cy.get(selectorsList.GenericnickName).eq(6).clear().type("230910")
     cy.get(selectorsList.GenericnickName).eq(7).clear().type('2025-02-08')
     cy.get(selectorsList.Close_date).click()
+
+    cy.get(selectorsList.GeneriComboBox).eq(0).click()
+    cy.get(':nth-child(27)').click()
+    cy.get(selectorsList.GeneriComboBox).eq(1).click()
+    cy.get('.oxd-select-dropdown > :nth-child(2)').click()
+    cy.get(selectorsList.Date_campo).eq(1).clear().type('1980-10-18')
+    cy.get(selectorsList.MorF).eq(0).click()
+
     cy.get(selectorsList.Salvando).eq(0).click()
     cy.get('body').should('contain','Successfully Updated')
     cy.get('.oxd-toast')
+
+    cy.get(selectorsList.GeneriComboBox).eq(2).click()
+    cy.get('.oxd-select-dropdown > :nth-child(5)').click()
+
+    cy.get(selectorsList.test_field).clear().type(445)
+
+    cy.get(selectorsList.Salvando).eq(1).click()
+    cy.get('body').should('contain','Successfully Updated')
+    cy.get('.oxd-toast')
+
     
   })
 
